@@ -5,7 +5,10 @@ struct coordinate
 {
 	int x, y;
 };
+
 coordinate boundary1 = {1, 1}, boundary2 = {79, 23};
+
+// Movement function
 void genCh(coordinate p, char c)
 {
 	gotoxy(p.x, p.y);
@@ -19,29 +22,29 @@ int main()
     char ch, player;
     do
     {
-	ch = getch();
-	switch (ch)
-	{
-		case 'w':
-			player = '^';
-			if (pos.y > boundary1.y) pos.y--;
-			break;
-		case 'a':
-			player = '<';
-			if (pos.x > boundary1.x) pos.x -= 2;
-			break;
-		case 's':
-			player = 'v';
-			if (pos.y < boundary2.y) pos.y++;
-			break;
-		case 'd':
-			player = '>';
-			if (pos.x < boundary2.x) pos.x += 2;
-			break;
-	}
+	    ch = getch();
+	    switch (ch)
+	    {
+		    case 'w':
+			    player = '^';
+			    if (pos.y > boundary1.y) pos.y--;
+			    break;
+		    case 'a':
+			    player = '<';
+			    if (pos.x > boundary1.x) pos.x -= 2;
+			    break;
+		    case 's':
+			    player = 'v';
+			    if (pos.y < boundary2.y) pos.y++;
+			    break;
+		    case 'd':
+			    player = '>';
+			    if (pos.x < boundary2.x) pos.x += 2;
+			    break;
+	    }
 
-	cout << "\b ";
-	genCh(pos, player);
+	    cout << "\b ";
+	    genCh(pos, player);
     } while (ch != 'q');
 
     return 0;
