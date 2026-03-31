@@ -17,7 +17,7 @@ void genCh(coordinate p, char c)
 
 int main()
 {
-	coordinate pos = {41, 12};
+	coordinate pos = {40, 12};
     clrscr();
     char ch, player, lt_cor = 201, h_edge = 205, rt_cor = 187, v_edge = 186, lb_cor = 200, rb_cor = 188;
     gotoxy(1, 1);
@@ -61,7 +61,7 @@ int main()
 			    break;
 		    case 'a':
 			    player = '<';
-			    if (pos.x > boundary1.x) pos.x--;
+			    if (pos.x > boundary1.x) pos.x -= 2;
 			    break;
 		    case 's':
 			    player = 'v';
@@ -69,7 +69,7 @@ int main()
 			    break;
 		    case 'd':
 			    player = '>';
-			    if (pos.x < boundary2.x) pos.x++;
+			    if (pos.x < boundary2.x) pos.x += 2;
 			    break;
 	    }
 
