@@ -55,11 +55,11 @@ void drawBox(int x1, int y1, int x2, int y2)
 {
     gotoxy(x1, y1);
     genCh(x1, y1, lt_cor);
-    horLine(2, 79, 1);
+    horLine(x1 + 1, x2 - 1, 1);
     genCh(x2, y1, rt_cor);
     vertLine(2, 23, x2);
     gotoxy(x1, y2);
-    genCh(1, 24, lb_cor);
+    genCh(x1, y2, lb_cor);
     horLine(2, 79, y2);
     genCh(x2, y2, rb_cor);
     gotoxy(x1, y1);
