@@ -1,59 +1,84 @@
 #include <iostream.h>
 #include <conio.h>
-#include <stdio.h>
+#include <string.h>
 
-char ch, player, lt_cor = 201, h_edge = 205, rt_cor = 187, v_edge = 186, lb_cor = 200, rb_cor = 188;
+// Constants
+char h_edge = 205,
+	v_edge = 186,
+	lt_cor = 201,
+	rt_cor = 187,
+	lb_cor = 200,
+	rb_cor = 188;
 struct coordinate
 {
 	int x, y;
 };
 
-coordinate boundary1 = {2, 1}, boundary2 = {79, 23};
+coordinate boundary1 = {2, 2}, boundary2 = {78, 23};
 
 // Movement function
 void genCh(int x, int y, char c)
 {
 	gotoxy(x, y);
-	printf("%c", c);
+	cout << c;
+	return;
 }
 
-void horLine(int x1, int x2, int y)
+void genNum(int x, int y, int n)
 {
-    gotoxy(x1, y);
-    for (int i = 0; i < (x2 - x1); i++) cout << h_edge;
+    gotoxy(x, y);
+    cout << n;
+    return;
 }
 
-void vertLine(int y1, int y2, int x) {
-    for (int i = y1; i <= y2; i++) genCh(x, i, v_edge);
+void genSen(int x, int y, char *s)
+{
+    gotoxy(x, y);
+    cout << s;
+    return;
+}
+
+void horLine(int x1, int x2, int y) 
+{
+	gotoxy(x1, y);
+	for(int i = 0; i <= (x2 - x1); i++) cout << h_edge;
+	return;
+}
+
+void vertLine(int y1, int y2, int x) 
+{
+	for(int i = y1; i <= y2; i++) genCh(x, i, v_edge);
+	return;
+}
+
+void drawBox(int x1, int y1, int x2, int y2) 
+{
+    gotoxy(x1, y1);
+    genCh(x1, y1, lt_cor);
+    horLine(2, 79, 1);
+    genCh(x2, y1, rt_cor);
+    vertLine(2, 23, x2);
+    gotoxy(x1, y2);
+    genCh(1, 24, lb_cor);
+    horLine(2, 79, y2);
+    genCh(x2, y2, rb_cor);
+    gotoxy(x1, y1);
+    vertLine(2, 23, 1);
+	return;
 }
 
 int main()
 {
-	coordinate pos = {41, 12};
+    coordinate pos = {40, 12};
     clrscr();
-    genCh(0, 0, lt_cor);
-    genCh(0, 23, lb_cor);
-    genCh(79, 0, rt_cor);
-    genCh(79, 23, rb_cor);
+    char ch, player = 'v';
 
-    
-    
-    
+    // Drawing grids
+    drawBox(1, 1, 80, 24);
+    genSen(35, 2, "Retro-Bound");
 
-    // for (int i = 1; i < 23; i++)
-    // {
-    //     gotoxy(0, i);
-    //     cout << v_edge;
-
-    //     gotoxy(79, i);
-    //     cout << v_edge;
-    // }
-
-    // gotoxy(79, 24);
-    // cout << rb_cor;
-
-    // gotoxy(41, pos.y);
-
+    // Player loop
+    genCh(pos.x, pos.y, player);
     do
     {
 	    ch = getch();
@@ -76,7 +101,6 @@ int main()
 			    if (pos.x < boundary2.x) pos.x += 2;
 			    break;
 	    }
-
 	    cout << "\b ";
 	    genCh(pos.x, pos.y, player);
     } while (ch != 'q');
