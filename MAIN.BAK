@@ -1,48 +1,83 @@
 #include <iostream.h>
 #include <conio.h>
 
+char ch, player, lt_cor = 201, h_edge = 205, rt_cor = 187, v_edge = 186, lb_cor = 200, rb_cor = 188;
 struct coordinate
 {
 	int x, y;
 };
-coordinate boundary1 = {1, 1}, boundary2 = {79, 23};
-void genCh(coordinate p, char c)
+
+coordinate boundary1 = {2, 1}, boundary2 = {79, 23};
+
+// Movement function
+void genCh(int x, int y, char c)
 {
-	gotoxy(p.x, p.y);
-	cout << c;
+	gotoxy(x, y);
+	printf("%c", c);
+}
+
+void horLine(int x1, int x2, int y)
+{
+    gotoxy(x1, y);
+    for (int i = 0; i < (x2 - x1); i++) cout << h_edge;
+}
+
+void vertLine(int y1, int y2, int x) {
+    for (int i = y1; i <= y2; i++) genCh(x, i, v_edge);
 }
 
 int main()
 {
 	coordinate pos = {41, 12};
     clrscr();
-    char ch, player;
+    genCh(0, 0, lt_cor);
+    genCh(0, 23, lb_cor);
+    genCh(79, 0, rt_cor);
+    genCh(79, 23, rb_cor);
+
+    
+    
+    
+
+    // for (int i = 1; i < 23; i++)
+    // {
+    //     gotoxy(0, i);
+    //     cout << v_edge;
+
+    //     gotoxy(79, i);
+    //     cout << v_edge;
+    // }
+
+    // gotoxy(79, 24);
+    // cout << rb_cor;
+
+    // gotoxy(41, pos.y);
+
     do
     {
-	ch = getch();
-	switch (ch)
-	{
-		case 'w':
-			player = '^';
-			if (pos.y > boundary1.y) pos.y--;
-			break;
-		case 'a':
-			player = '<';
-			if (pos.x > boundary1.x) pos.x -= 2;
-			break;
-		case 's':
-			player = 'v';
-			if (pos.y < boundary2.y) pos.y++;
-			break;
-		case 'd':
-			player = '>';
-			if (pos.x < boundary2.x) pos.x += 2;
-			break;
+	    ch = getch();
+	    switch (ch)
+	    {
+		    case 'w':
+			    player = '^';
+			    if (pos.y > boundary1.y) pos.y--;
+			    break;
+		    case 'a':
+			    player = '<';
+			    if (pos.x > boundary1.x) pos.x -= 2;
+			    break;
+		    case 's':
+			    player = 'v';
+			    if (pos.y < boundary2.y) pos.y++;
+			    break;
+		    case 'd':
+			    player = '>';
+			    if (pos.x < boundary2.x) pos.x += 2;
+			    break;
+	    }
 
-	}
-
-	cout << "\b ";
-	genCh(pos, player);
+	    cout << "\b ";
+	    genCh(pos.x, pos.y, player);
     } while (ch != 'q');
 
     return 0;

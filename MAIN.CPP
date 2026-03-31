@@ -1,54 +1,58 @@
 #include <iostream.h>
 #include <conio.h>
+#include <stdio.h>
 
+char ch, player, lt_cor = 201, h_edge = 205, rt_cor = 187, v_edge = 186, lb_cor = 200, rb_cor = 188;
 struct coordinate
 {
 	int x, y;
 };
 
-coordinate boundary1 = {2, 2}, boundary2 = {78, 22};
+coordinate boundary1 = {2, 1}, boundary2 = {79, 23};
 
 // Movement function
-void genCh(coordinate p, char c)
+void genCh(int x, int y, char c)
 {
-	gotoxy(p.x, p.y);
-	cout << c;
+	gotoxy(x, y);
+	printf("%c", c);
+}
+
+void horLine(int x1, int x2, int y)
+{
+    gotoxy(x1, y);
+    for (int i = 0; i < (x2 - x1); i++) cout << h_edge;
+}
+
+void vertLine(int y1, int y2, int x) {
+    for (int i = y1; i <= y2; i++) genCh(x, i, v_edge);
 }
 
 int main()
 {
-	coordinate pos = {40, 12};
+	coordinate pos = {41, 12};
     clrscr();
-    char ch, player, lt_cor = 201, h_edge = 205, rt_cor = 187, v_edge = 186, lb_cor = 200, rb_cor = 188;
-    gotoxy(1, 1);
-    cout << lt_cor;
+    genCh(0, 0, lt_cor);
+    genCh(0, 23, lb_cor);
+    genCh(79, 0, rt_cor);
+    genCh(79, 23, rb_cor);
 
-    for (int i = 2; i < 79; i++)
-    {
-        gotoxy(i, 1);
-        cout << h_edge;
+    
+    
+    
 
-        gotoxy(i, 23);
-        cout << h_edge;
-    }
-    gotoxy(79, 1);
-    cout << rt_cor;
+    // for (int i = 1; i < 23; i++)
+    // {
+    //     gotoxy(0, i);
+    //     cout << v_edge;
 
-    for (i = 2; i < 23; i++)
-    {
-        gotoxy(1, i);
-        cout << v_edge;
+    //     gotoxy(79, i);
+    //     cout << v_edge;
+    // }
 
-        gotoxy(79, i);
-        cout << v_edge;
-    }
+    // gotoxy(79, 24);
+    // cout << rb_cor;
 
-    gotoxy(79, 23);
-    cout << rb_cor;
-    gotoxy(1, 23);
-    cout << lb_cor;
-
-    gotoxy(pos.x, pos.y);
+    // gotoxy(41, pos.y);
 
     do
     {
@@ -74,7 +78,7 @@ int main()
 	    }
 
 	    cout << "\b ";
-	    genCh(pos, player);
+	    genCh(pos.x, pos.y, player);
     } while (ch != 'q');
 
     return 0;
