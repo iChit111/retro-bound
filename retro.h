@@ -14,7 +14,7 @@ struct coordinate
 	int x, y;
 };
 
-coordinate boundary1 = {2, 2}, boundary2 = {78, 23};
+coordinate boundary1 = {2, 2}, boundary2 = {66, 23};
 
 // Movement function
 void genCh(int x, int y, char c)

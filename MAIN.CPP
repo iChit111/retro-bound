@@ -7,8 +7,11 @@ int main()
     char ch, player = 'v';
 
     // Drawing grids
-    drawBox(1, 1, 80, 24);
-    genSen(35, 2, "Retro-Bound");
+    drawBox(1, 1, 79, 24);
+    vertLine(1, 24, 67);
+    genCh(67, 1, 203);
+    genCh(67, 24, 202);
+    genSen(68, 2, "Retro-Bound");
 
     // Player loop
     genCh(pos.x, pos.y, player);
