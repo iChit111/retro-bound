@@ -15,9 +15,11 @@ struct state
     coordinate pos;
     short hp, status, facing;
 };
+
 state loadState();
 void saveState(state);
 class Player;
+
 class Retro
 {
     private:
@@ -36,7 +38,6 @@ class Retro
             for(int i = 0; i < 11; i++) cout << (char)196;
         }
 
-        Player readPlayer()
     public:
         Retro()
         {
@@ -45,20 +46,32 @@ class Retro
             currentState = loadState(); 
         }
 
-        void updatePlayer(Player p)
-        {
-            char ch;
-            switch(facing)
-            {
-                case UP:
-                    ch = '^'
-            }
-
-        }
         void run()
         {
             clrscr();
             displayUI();
+            char ch;
+            player.displayPlayer();
+            do
+            {
+                ch = getch();
+                short action;
+                switch (ch) {
+                    case 'w':
+                        action = UP;
+                        break;
+                    case 'a':
+                        action = LEFT;
+                        break;
+                    case 's':
+                        action = RIGHT;
+                        break;
+                    case 'd':
+                        action = DOWN;
+                        break;
+                }
+                player.updatePlayer(action, boundary1, boundary2);
+            } while (ch != 'q');
         }
         
         ~Retro()
@@ -79,6 +92,48 @@ class Player
             pos.y = s.pos.y;
             hp = s.hp;
             facing = s.facing;
+        }
+
+        void displayPlayer() {
+            char p;
+
+            switch(facing) {
+                case UP:
+                    p = '^';
+                    break;
+                case DOWN:
+                    p = 'v';
+                    break;
+                case RIGHT:
+                    p = '>';
+                    break;
+                case LEFT:
+                    p = '<';
+                    break;
+            }
+            cout << "\b ";
+            genCh(pos.x, pos.y, player);
+        }
+
+        void updateOrientation(short action, coordinate b1, coordinate b2) {
+            switch (action){
+                case UP:
+                    if(facing == UP) if (pos.y > b1.y) pos.y--;
+                    else facing = UP;
+                    break;
+                case LEFT:
+                    if(facing == LEFT) if (pos.x > b1.x) pos.x--;
+                    else facing = LEFT;
+                    break;
+                case RIGHT:
+                    if(facing == RIGHT) if (pos.x > b2.x) pos.x++;
+                    else facing = RIGHT;
+                    break;
+                case DOWN:
+                    if(facing == DOWN) if (pos.y < b2.y) pos.y++;
+                    else facing = DOWN;
+                    break;
+            }
         }
 
         friend Retro :: readPlayer();
