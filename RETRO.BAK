@@ -16,14 +16,12 @@ struct state
     short hp, status, facing;
 };
 state loadState();
-void saveState(state);
 class Player;
 class Retro
 {
     private:
         coordinate boundary1, boundary2;
         state currentState;
-        Player player;
 
         void displayUI()
         {
@@ -36,7 +34,6 @@ class Retro
             for(int i = 0; i < 11; i++) cout << (char)196;
         }
 
-        Player readPlayer()
     public:
         Retro()
         {
@@ -61,10 +58,6 @@ class Retro
             displayUI();
         }
         
-        ~Retro()
-        {
-            saveState(currentState);
-        }
 };
 
 class Player
@@ -81,7 +74,7 @@ class Player
             facing = s.facing;
         }
 
-        friend Retro :: readPlayer();
+        friend Retro :: updatePlayer(Player);
 };
 
 
@@ -99,14 +92,14 @@ state loadState()
         f.close();
     }
 
-    return temp;
+    return pos;
 }
-void saveState(state s)
+void saveState(coordinate pos)
 {
     ofstream f("save.dat");
     if (f)
     {
-        f << s.pos.x << "\n" << s.pos.y;
+        f << pos.x << "\n" << pos.y;
         f.close();
     }
 }
