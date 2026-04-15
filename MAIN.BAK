@@ -3,6 +3,8 @@
 #include <string.h>
 #include <conio.h>
 
+// ----------------------UTILS.H-----------------------
+
 // Constants
 char h_edge = 205,
 	v_edge = 186,
@@ -32,20 +34,20 @@ void genSen(int x, int y, char *s)
     return;
 }
 
-void horLine(int x1, int x2, int y) 
+void horLine(int x1, int x2, int y)
 {
 	gotoxy(x1, y);
 	for(int i = 0; i <= (x2 - x1); i++) cout << h_edge;
 	return;
 }
 
-void vertLine(int y1, int y2, int x) 
+void vertLine(int y1, int y2, int x)
 {
 	for(int i = y1; i <= y2; i++) genCh(x, i, v_edge);
 	return;
 }
 
-void drawBox(int x1, int y1, int x2, int y2) 
+void drawBox(int x1, int y1, int x2, int y2)
 {
     gotoxy(x1, y1);
     genCh(x1, y1, lt_cor);
@@ -60,6 +62,9 @@ void drawBox(int x1, int y1, int x2, int y2)
     vertLine(2, 23, 1);
 	return;
 }
+
+
+// ----------------------RETRO.H-------------------
 
 struct coordinate
 {
@@ -116,19 +121,27 @@ class Player
         void updateOrientation(short action, coordinate b1, coordinate b2) {
 	    switch (action){
                 case UP:
-                    if(facing == UP) if (pos.y > b1.y) pos.y--;
+                    if(facing == UP) {
+                        if (pos.y > b1.y) pos.y--;
+                    }
                     else facing = UP;
                     break;
                 case LEFT:
-                    if(facing == LEFT) if (pos.x > b1.x) pos.x--;
+                    if(facing == LEFT) {
+                        if (pos.x > b1.x) pos.x--;
+                    }
                     else facing = LEFT;
                     break;
                 case RIGHT:
-                    if(facing == RIGHT) if (pos.x > b2.x) pos.x++;
+                    if(facing == RIGHT) {
+                        if (pos.x < b2.x) pos.x++;
+                    }
                     else facing = RIGHT;
                     break;
                 case DOWN:
-                    if(facing == DOWN) if (pos.y < b2.y) pos.y++;
+                    if(facing == DOWN) {
+                        if (pos.y < b2.y) pos.y++;
+                    }
                     else facing = DOWN;
                     break;
             }
@@ -150,7 +163,7 @@ class Retro
 	    genCh(67, 24, 202);
 	    genSen(68, 2, "Retro-Bound");
 	    gotoxy(68, 3);
-	    for(int i = 0; i < 11; i++) cout << (char)196;
+	    for(int i = 0; i < 12; i++) cout << (char)196;
 	}
 
     public:
@@ -180,13 +193,14 @@ class Retro
 			action = LEFT;
 			break;
 		    case 's':
-			action = RIGHT;
+			action = DOWN;
 			break;
 		    case 'd':
-			action = DOWN;
+			action = RIGHT;
 			break;
 		}
 		player->updateOrientation(action, boundary1, boundary2);
+        player->displayPlayer();
 	    } while (ch != 'q');
 	}
 

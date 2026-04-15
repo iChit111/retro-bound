@@ -57,3 +57,8 @@ void drawBox(int x1, int y1, int x2, int y2)
     vertLine(2, 23, 1);
 	return;
 }
+
+void setColor(int text, int bg) {
+    textcolor(text);
+    textbackground(bg);
+}
