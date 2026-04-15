@@ -1,7 +1,231 @@
-#include "retro.h"
+#include <iostream.h>
+#include <fstream.h>
+#include <string.h>
+#include <conio.h>
 
-int main()
+// ----------------------UTILS.H-----------------------
+
+// Constants
+char h_edge = 205,
+	v_edge = 186,
+	lt_cor = 201,
+	rt_cor = 187,
+	lb_cor = 200,
+	rb_cor = 188;
+
+void genCh(int x, int y, char c)
 {
+	gotoxy(x, y);
+	cout << c;
+	return;
+}
+
+void genNum(int x, int y, int n)
+{
+    gotoxy(x, y);
+    cout << n;
+    return;
+}
+
+void genSen(int x, int y, char *s)
+{
+    gotoxy(x, y);
+    cout << s;
+    return;
+}
+
+void horLine(int x1, int x2, int y)
+{
+	gotoxy(x1, y);
+	for(int i = 0; i <= (x2 - x1); i++) cout << h_edge;
+	return;
+}
+
+void vertLine(int y1, int y2, int x)
+{
+	for(int i = y1; i <= y2; i++) genCh(x, i, v_edge);
+	return;
+}
+
+void drawBox(int x1, int y1, int x2, int y2)
+{
+    gotoxy(x1, y1);
+    genCh(x1, y1, lt_cor);
+    horLine(x1 + 1, x2 - 1, 1);
+    genCh(x2, y1, rt_cor);
+    vertLine(2, 23, x2);
+    gotoxy(x1, y2);
+    genCh(x1, y2, lb_cor);
+    horLine(2, 79, y2);
+    genCh(x2, y2, rb_cor);
+    gotoxy(x1, y1);
+    vertLine(2, 23, 1);
+	return;
+}
+
+
+// ----------------------RETRO.H-------------------
+
+struct coordinate
+{
+	short x, y;
+};
+
+enum face {UP, LEFT, RIGHT, DOWN};
+
+struct state
+{
+    coordinate pos;
+    short hp, status, facing;
+};
+
+state loadState();
+void saveState(state);
+
+
+class Player
+{
+    coordinate pos;
+    short hp, facing;
+
+    public:
+        Player(state s)
+        {
+            pos.x = s.pos.x;
+            pos.y = s.pos.y;
+            hp = s.hp;
+            facing = s.facing;
+        }
+
+        void displayPlayer() {
+            char p;
+
+	    switch(facing) {
+		case UP:
+		    p = '^';
+		    break;
+		case DOWN:
+		    p = 'v';
+		    break;
+		case RIGHT:
+		    p = '>';
+		    break;
+		case LEFT:
+		    p = '<';
+		    break;
+	    }
+	    cout << "\b ";
+	    genCh(pos.x, pos.y, p);
+	}
+
+        void updateOrientation(short action, coordinate b1, coordinate b2) {
+	    switch (action){
+                case UP:
+                    if(facing == UP) if (pos.y > b1.y) pos.y--;
+                    else facing = UP;
+                    break;
+                case LEFT:
+                    if(facing == LEFT) if (pos.x > b1.x) pos.x--;
+                    else facing = LEFT;
+                    break;
+                case RIGHT:
+                    if(facing == RIGHT) if (pos.x > b2.x) pos.x++;
+                    else facing = RIGHT;
+                    break;
+                case DOWN:
+                    if(facing == DOWN) if (pos.y < b2.y) pos.y++;
+                    else facing = DOWN;
+                    break;
+            }
+        }
+};
+
+class Retro
+{
+    private:
+	coordinate boundary1, boundary2;
+	state currentState;
+	Player *player;
+
+	void displayUI()
+	{
+	    drawBox(1, 1, 79, 24);
+	    vertLine(1, 24, 67);
+	    genCh(67, 1, 203);
+	    genCh(67, 24, 202);
+	    genSen(68, 2, "Retro-Bound");
+	    gotoxy(68, 3);
+	    for(int i = 0; i < 11; i++) cout << (char)196;
+	}
+
+    public:
+	Retro()
+	{
+	    boundary1.x = 2; boundary1.y = 2;
+	    boundary2.x = 66; boundary2.y = 23;
+	    currentState = loadState();
+	    player = new Player(currentState);
+	}
+
+	void run()
+	{
+	    clrscr();
+	    displayUI();
+	    char ch;
+	    player->displayPlayer();
+	    do
+	    {
+		ch = getch();
+		short action;
+		switch (ch) {
+		    case 'w':
+			action = UP;
+			break;
+		    case 'a':
+			action = LEFT;
+			break;
+		    case 's':
+			action = RIGHT;
+			break;
+		    case 'd':
+			action = DOWN;
+			break;
+		}
+		player->updateOrientation(action, boundary1, boundary2);
+	    } while (ch != 'q');
+	}
+
+	~Retro()
+	{
+	    saveState(currentState);
+	}
+};
+
+state loadState()
+{
+    // default
+    state temp;
+    
+    ifstream f("save.dat");
+    if (f)
+    {
+        f >> temp.pos.x >> temp.pos.y;
+        f.close();
+    }
+
+    return temp;
+}
+void saveState(state s)
+{
+    ofstream f("save.dat");
+    if (f)
+    {
+        f << s.pos.x << "\n" << s.pos.y;
+        f.close();
+    }
+}
+
+int main() {
     Retro Game;
     Game.run();
     return 0;

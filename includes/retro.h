@@ -82,7 +82,7 @@ class Retro
     private:
         coordinate boundary1, boundary2;
         state currentState;
-        Player player;
+        Player *player;
 
         void displayUI()
         {
@@ -100,7 +100,8 @@ class Retro
         {
             boundary1.x = 2; boundary1.y = 2;
             boundary2.x = 66; boundary2.y = 23;
-            currentState = loadState(); 
+            currentState = loadState();
+            player = new Player(currentState);
         }
 
         void run()
