@@ -121,19 +121,27 @@ class Player
         void updateOrientation(short action, coordinate b1, coordinate b2) {
 	    switch (action){
                 case UP:
-                    if(facing == UP) if (pos.y > b1.y) pos.y--;
+                    if(facing == UP) {
+                        if (pos.y > b1.y) pos.y--;
+                    }
                     else facing = UP;
                     break;
                 case LEFT:
-                    if(facing == LEFT) if (pos.x > b1.x) pos.x--;
+                    if(facing == LEFT) {
+                        if (pos.x > b1.x) pos.x--;
+                    }
                     else facing = LEFT;
                     break;
                 case RIGHT:
-                    if(facing == RIGHT) if (pos.x > b2.x) pos.x++;
+                    if(facing == RIGHT) {
+                        if (pos.x < b2.x) pos.x++;
+                    }
                     else facing = RIGHT;
                     break;
                 case DOWN:
-                    if(facing == DOWN) if (pos.y < b2.y) pos.y++;
+                    if(facing == DOWN) {
+                        if (pos.y < b2.y) pos.y++;
+                    }
                     else facing = DOWN;
                     break;
             }
@@ -185,10 +193,10 @@ class Retro
 			action = LEFT;
 			break;
 		    case 's':
-			action = RIGHT;
+			action = DOWN;
 			break;
 		    case 'd':
-			action = DOWN;
+			action = RIGHT;
 			break;
 		}
 		player->updateOrientation(action, boundary1, boundary2);
