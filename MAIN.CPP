@@ -123,36 +123,43 @@ class Player
             textcolor(YELLOW);
             genCh(pos.x, pos.y, p);
         textcolor(WHITE);
-	}
+		}
 
-	void updateOrientation(short action, coordinate b1, coordinate b2) {
-	    switch (action){
-		case UP:
-		    if(facing == UP) {
-			if (pos.y > b1.y) pos.y--;
-		    }
-		    else facing = UP;
-		    break;
-		case LEFT:
-		    if(facing == LEFT) {
-			if (pos.x > b1.x) pos.x--;
-		    }
-		    else facing = LEFT;
-		    break;
-		case RIGHT:
-		    if(facing == RIGHT) {
-			if (pos.x < b2.x) pos.x++;
-		    }
-		    else facing = RIGHT;
-		    break;
-		case DOWN:
-		    if(facing == DOWN) {
-			if (pos.y < b2.y) pos.y++;
-		    }
-		    else facing = DOWN;
-		    break;
-	    }
-	}
+		void updateOrientation(short action, coordinate b1, coordinate b2) {
+	    	switch (action){
+			case UP:
+		    	if(facing == UP) {
+					if (pos.y > b1.y) pos.y--;
+		    	}
+		    	else facing = UP;
+		    	break;
+			case LEFT:
+		    	if(facing == LEFT) {
+					if (pos.x > b1.x) pos.x--;
+		    	}
+		    	else facing = LEFT;
+		    	break;
+			case RIGHT:
+		    	if(facing == RIGHT) {
+					if (pos.x < b2.x) pos.x++;
+		    	}
+		    	else facing = RIGHT;
+		    	break;
+			case DOWN:
+		    	if(facing == DOWN) {
+					if (pos.y < b2.y) pos.y++;
+		    	}
+		    	else facing = DOWN;
+		    	break;
+	    	}
+		}
+		state getState() {
+    		state s;
+    		s.pos = pos;
+    		s.hp = hp;
+    		s.facing = facing;
+    		return s;
+		}
 };
 
 class Retro
@@ -214,6 +221,7 @@ class Retro
 
 	~Retro()
 	{
+		currentState = player -> getState();
 	    saveState(currentState);
 	}
 };
@@ -222,22 +230,23 @@ state loadState()
 {
     // default
     state temp;
-    
-    ifstream f("save.dat");
+    temp.pos.x = 40; temp.pos.y = 12;
+	temp.hp = 100; temp.facing = DOWN;
+
+	ifstream f("C:\\TURBOC3\\Projects\\SAVE.DAT");
     if (f)
     {
-        f >> temp.pos.x >> temp.pos.y;
+        f >> temp.pos.x >> temp.pos.y >> temp.facing;
         f.close();
     }
-
     return temp;
 }
 void saveState(state s)
 {
-    ofstream f("save.dat");
+    ofstream f("C:\\TURBOC3\\Projects\\SAVE.DAT");
     if (f)
     {
-        f << s.pos.x << "\n" << s.pos.y;
+        f << s.pos.x << "\n" << s.pos.y << "\n" << s.facing;
         f.close();
     }
 }
