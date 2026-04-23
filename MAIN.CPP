@@ -135,13 +135,13 @@ class Player
 		    	break;
 			case LEFT:
 		    	if(facing == LEFT) {
-					if (pos.x > b1.x) pos.x--;
+					if (pos.x > b1.x) pos.x -= 2;
 		    	}
 		    	else facing = LEFT;
 		    	break;
 			case RIGHT:
 		    	if(facing == RIGHT) {
-					if (pos.x < b2.x) pos.x++;
+					if (pos.x < b2.x) pos.x += 2;
 		    	}
 		    	else facing = RIGHT;
 		    	break;
