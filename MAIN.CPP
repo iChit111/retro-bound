@@ -162,6 +162,14 @@ class Player
 		}
 };
 
+class Interactable
+{
+	// Map mein utar
+	// Position st player udhar land nahi karta
+	// Agar object rakha hai to cant walk over that object
+	// coordinate pos, inheritance, 4 bool array for interacting with player
+};
+
 class Retro
 {
     private:
@@ -172,6 +180,7 @@ class Retro
 	void displayUI()
 	{
 	    drawBox(1, 1, 79, 24);
+		horLine(2, 66, 20);
 	    vertLine(1, 24, 67);
 	    genCh(67, 1, 203);
 	    genCh(67, 24, 202);
@@ -184,7 +193,7 @@ class Retro
 	Retro()
 	{
 	    boundary1.x = 2; boundary1.y = 2;
-	    boundary2.x = 66; boundary2.y = 23;
+	    boundary2.x = 66; boundary2.y = 19;
 	    currentState = loadState();
 	    player = new Player(currentState);
         setColor(WHITE, BLACK);
