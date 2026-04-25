@@ -232,6 +232,8 @@ class Retro
             vertLine(1, 24, 67);
             genCh(67, 1, 203);
             genCh(67, 24, 202);
+			genCh(1, 20, 204);
+			genCh(67, 20, 185);
             genSen(68, 2, "Retro-Bound");
             gotoxy(69, 3);
             for(int i = 0; i < 10; i++) cout << (char)196;
