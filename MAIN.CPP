@@ -6,7 +6,6 @@
 
 // ----------------------UTILS.H-----------------------
 
-// Constants
 char h_edge = 205,
 	v_edge = 186,
 	lt_cor = 201,
@@ -50,17 +49,14 @@ void vertLine(int y1, int y2, int x)
 
 void drawBox(int x1, int y1, int x2, int y2)
 {
-    gotoxy(x1, y1);
     genCh(x1, y1, lt_cor);
-    horLine(x1 + 1, x2 - 1, 1);
+    horLine(x1 + 1, x2 - 1, y1);
     genCh(x2, y1, rt_cor);
-    vertLine(2, 23, x2);
-    gotoxy(x1, y2);
+    vertLine(y1 + 1, y2 - 1, x2);
     genCh(x1, y2, lb_cor);
-    horLine(2, 79, y2);
+    horLine(x1 + 1, x2 - 1, y2);
     genCh(x2, y2, rb_cor);
-    gotoxy(x1, y1);
-    vertLine(2, 23, 1);
+    vertLine(y1 + 1, y2 - 1, x1);
 	return;
 }
 
@@ -70,7 +66,9 @@ void setColor(int text, int bg) {
 }
 
 // ----------------------RETRO.H-------------------
+
 class Interactable;
+
 struct coordinate
 {
 	short x, y;
@@ -87,7 +85,6 @@ struct state
 state loadState();
 void saveState(state);
 
-
 class Player
 {
     coordinate pos;
@@ -102,226 +99,207 @@ class Player
             facing = s.facing;
         }
 
-        void displayPlayer() {
+        void displayPlayer()
+        {
             char p;
-            
             switch(facing) {
-                case UP:
-                p = '^';
-                break;
-                case DOWN:
-                p = 'v';
-                break;
-                case RIGHT:
-                p = '>';
-                break;
-                case LEFT:
-                p = '<';
-                break;
+                case UP:    p = '^'; break;
+                case DOWN:  p = 'v'; break;
+                case RIGHT: p = '>'; break;
+                case LEFT:  p = '<'; break;
             }
-            cout << "\b ";
             textcolor(YELLOW);
             genCh(pos.x, pos.y, p);
-        textcolor(WHITE);
-		}
+            textcolor(WHITE);
+        }
 
-		void updateOrientation(short action, coordinate b1, coordinate b2, Interactable *item) {
-	    	coordinate oldPos = pos;
-			switch (action){
-			case UP:
-				if(facing == UP) {
-					if (pos.y - 1 == item->getPos().y && pos.x == item->getPos().x) {
-						// Blocked
-					} else if (pos.y > b1.y) {
-						pos.y--;
-					}
-				} else {
-					facing = UP;
-				}
-				break;
-			case LEFT:
-		    	if(facing == LEFT) {
-					if (pos.x - 1 == item->getPos().x && pos.y == item->getPos().y) {
-						// Blocked
-					} else if (pos.x > b1.x) {
-						pos.x -= 2;
-					}
-				}
-		    	else facing = LEFT;
-		    	break;
-			case RIGHT:
-		    	if(facing == RIGHT) {
-					if (pos.x + 1 == item->getPos().x && pos.y == item->getPos().y) {
-						// Blocked
-					} else if (pos.x < b2.x) {
-						pos.x += 2;
-					}
-				}
-		    	else facing = RIGHT;
-		    	break;
-			case DOWN:
-		    	if(facing == DOWN) {
-					if (pos.y + 1 == item->getPos().y && pos.x == item->getPos().x) {
-						// Blocked
-					} else if (pos.y < b2.y) {
-						pos.y++;
-					}
+        void updateOrientation(short action, coordinate b1, coordinate b2, Interactable *item);
 
-				}
-		    	else facing = DOWN;
-		    	break;
-	    	}
-			if (oldPos.x != pos.x || oldPos.y != pos.y) {
-			genCh(pos.x, pos.y, ' ');
-		}
-		
-		}
-		state getState() {
-    		state s;
-    		s.pos = pos;
-    		s.hp = hp;
-    		s.facing = facing;
-    		return s;
-		}
+        state getState()
+        {
+            state s;
+            s.pos = pos;
+            s.hp = hp;
+            s.facing = facing;
+            return s;
+        }
 };
 
 class Interactable
 {
-	// coordinate pos, inheritance, 4 bool array for interacting with player
-	private:
-		coordinate pos;
-		char icon;
-		char* message;
-		int canInteractFrom[4];
-	// Map mein utar
-	public:
-		Interactable(short x, short y, char c, char* msg, int u, int l, int r, int d)
-		{
-			pos.x = x; pos.y = y;
-			icon = c;
-			message = msg;
-			canInteractFrom[UP] = u;
-			canInteractFrom[LEFT] = l;
-			canInteractFrom[RIGHT] = r;
-			canInteractFrom[DOWN] = d;
-		}
-		void display()
-		{
-			genCh(pos.x, pos.y, icon);
-		}
+    private:
+        coordinate pos;
+        char icon;
+        char* message;
+        int canInteractFrom[4];
 
-		coordinate getPos() {return pos;}
+    public:
+        Interactable(short x, short y, char c, char* msg, int u, int l, int r, int d)
+        {
+            pos.x = x; pos.y = y;
+            icon = c;
+            message = msg;
+            canInteractFrom[UP] = u;
+            canInteractFrom[LEFT] = l;
+            canInteractFrom[RIGHT] = r;
+            canInteractFrom[DOWN] = d;
+        }
 
-		int tryInteract(coordinate playerPos, short playerFacing)
-		{
-			if (playerPos.x == pos.x && playerPos.y == pos.y + 1 
-				&& playerFacing == UP && canInteractFrom[DOWN]) return 1;
-			if (playerPos.x == pos.x && playerPos.y == pos.y - 1 
-				&& playerFacing == DOWN && canInteractFrom[UP]) return 1;
-			if (playerPos.x == pos.x + 1 && playerPos.y == pos.y 
-				&& playerFacing == LEFT && canInteractFrom[RIGHT]) return 1;
-			if (playerPos.x == pos.x - 1 && playerPos.y == pos.y 
-				&& playerFacing == RIGHT && canInteractFrom[LEFT]) return 1;
-			
-			return 0;
-		}
-		void showMessage()
-		{
-			genSen(2, 22, "                  ");
-			genSen(2, 22, message);
-		}
+        void display()
+        {
+            textcolor(GREEN);
+            genCh(pos.x, pos.y, icon);
+            textcolor(WHITE);
+        }
+
+        coordinate getPos() { return pos; }
+
+        int tryInteract(coordinate playerPos, short playerFacing)
+        {
+            if (playerPos.x == pos.x && playerPos.y == pos.y + 1
+                && playerFacing == UP && canInteractFrom[DOWN]) return 1;
+            if (playerPos.x == pos.x && playerPos.y == pos.y - 1
+                && playerFacing == DOWN && canInteractFrom[UP]) return 1;
+            if (playerPos.x == pos.x + 2 && playerPos.y == pos.y
+                && playerFacing == LEFT && canInteractFrom[RIGHT]) return 1;
+            if (playerPos.x == pos.x - 2 && playerPos.y == pos.y
+                && playerFacing == RIGHT && canInteractFrom[LEFT]) return 1;
+
+            return 0;
+        }
+
+        void showMessage()
+        {
+            genSen(2, 22, "                                        ");
+            genSen(2, 22, message);
+        }
 };
+
+// Defined outside class since Interactable must be fully defined first
+void Player::updateOrientation(short action, coordinate b1, coordinate b2, Interactable *item)
+{
+    coordinate oldPos = pos;
+
+    switch (action) {
+        case UP:
+            if (facing == UP) {
+                if (!(pos.y - 1 == item->getPos().y && pos.x == item->getPos().x)
+                    && pos.y > b1.y)
+                    pos.y--;
+            } else facing = UP;
+            break;
+        case LEFT:
+            if (facing == LEFT) {
+                if (!(pos.x - 2 == item->getPos().x && pos.y == item->getPos().y)
+                    && pos.x > b1.x)
+                    pos.x -= 2;
+            } else facing = LEFT;
+            break;
+        case RIGHT:
+            if (facing == RIGHT) {
+                if (!(pos.x + 2 == item->getPos().x && pos.y == item->getPos().y)
+                    && pos.x < b2.x)
+                    pos.x += 2;
+            } else facing = RIGHT;
+            break;
+        case DOWN:
+            if (facing == DOWN) {
+                if (!(pos.y + 1 == item->getPos().y && pos.x == item->getPos().x)
+                    && pos.y < b2.y)
+                    pos.y++;
+            } else facing = DOWN;
+            break;
+    }
+
+    // Only erase old cell if player actually moved
+    if (oldPos.x != pos.x || oldPos.y != pos.y) {
+        genCh(oldPos.x, oldPos.y, ' ');
+    }
+}
 
 class Retro
 {
     private:
-	coordinate boundary1, boundary2;
-	state currentState;
-	Player *player;
-	Interactable *item1;
+        coordinate boundary1, boundary2;
+        state currentState;
+        Player *player;
+        Interactable *item1;
 
-	void displayUI()
-	{
-	    drawBox(1, 1, 79, 24);
-		horLine(2, 66, 20);
-	    vertLine(1, 24, 67);
-	    genCh(67, 1, 203);
-	    genCh(67, 24, 202);
-	    genSen(68, 2, "Retro-Bound");
-	    gotoxy(69, 3);
-	    for(int i = 0; i < 10; i++) cout << (char)196;
-	}
+        void displayUI()
+        {
+            drawBox(1, 1, 79, 24);
+            horLine(2, 66, 20);
+            vertLine(1, 24, 67);
+            genCh(67, 1, 203);
+            genCh(67, 24, 202);
+            genSen(68, 2, "Retro-Bound");
+            gotoxy(69, 3);
+            for(int i = 0; i < 10; i++) cout << (char)196;
+        }
 
     public:
-	Retro()
-	{
-	    boundary1.x = 2; boundary1.y = 2;
-	    boundary2.x = 66; boundary2.y = 19;
-	    currentState = loadState();
-	    player = new Player(currentState);
-        setColor(WHITE, BLACK);
-		item1 = new Interactable(12, 10, 'A', "This is a character", 1, 1, 1, 1);
-	}
+        Retro()
+        {
+            boundary1.x = 2; boundary1.y = 2;
+            boundary2.x = 66; boundary2.y = 19;
+            currentState = loadState();
+            setColor(WHITE, BLACK);
+            player = new Player(currentState);
+            item1 = new Interactable(12, 10, 'A', "This is a character", 1, 1, 1, 1);
+        }
 
-	void run()
-	{
-	    clrscr();
-	    displayUI();
-	    char ch;
-		item1 -> display();
-	    player->displayPlayer();
-	    do
-	    {
-		ch = getch();
-		short action = -1;
-		switch (ch) {
-		    case 'w':
-			action = UP;
-			break;
-		    case 'a':
-			action = LEFT;
-			break;
-		    case 's':
-			action = DOWN;
-			break;
-		    case 'd':
-			action = RIGHT;
-			break;
-			case 'e':
-			if (item1 -> tryInteract(player -> getState().pos, 
-			player -> getState().facing))
-			{
-				item1 -> showMessage();
-			}
-			break;
-		}
+        void run()
+        {
+            clrscr();
+            displayUI();
+            item1->display();
+            player->displayPlayer();
 
-		if (action != -1) {
-			player->updateOrientation(action, boundary1, boundary2, item1);
-		}
+            char ch;
+            do
+            {
+                ch = getch();
+                short action = -1;
 
-		item1->display();
-        player->displayPlayer();
-	    } while (ch != 'q');
-	}
+                switch (ch) {
+                    case 'w': action = UP;    break;
+                    case 'a': action = LEFT;  break;
+                    case 's': action = DOWN;  break;
+                    case 'd': action = RIGHT; break;
+                    case 'e':
+                        if (item1->tryInteract(player->getState().pos,
+                                               player->getState().facing))
+                        {
+                            item1->showMessage();
+                        }
+                        break;
+                }
 
-	~Retro()
-	{
-		currentState = player -> getState();
-	    saveState(currentState);
-		delete item1;
-		delete player;
-	}
+                if (action != -1) {
+                    player->updateOrientation(action, boundary1, boundary2, item1);
+                    item1->display();
+                    player->displayPlayer();
+                }
+
+            } while (ch != 'q');
+        }
+
+        ~Retro()
+        {
+            currentState = player->getState();
+            saveState(currentState);
+            delete item1;
+            delete player;
+        }
 };
 
 state loadState()
 {
-    // default
     state temp;
     temp.pos.x = 40; temp.pos.y = 12;
-	temp.hp = 100; temp.facing = DOWN;
+    temp.hp = 100; temp.facing = DOWN;
 
-	ifstream f("C:\\TURBOC3\\Projects\\SAVE.DAT");
+    ifstream f("C:\\TURBOC3\\Projects\\SAVE.DAT");
     if (f)
     {
         f >> temp.pos.x >> temp.pos.y >> temp.facing;
@@ -329,6 +307,7 @@ state loadState()
     }
     return temp;
 }
+
 void saveState(state s)
 {
     ofstream f("C:\\TURBOC3\\Projects\\SAVE.DAT");
