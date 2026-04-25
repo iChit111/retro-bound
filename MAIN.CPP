@@ -70,7 +70,7 @@ void setColor(int text, int bg) {
 }
 
 // ----------------------RETRO.H-------------------
-
+class Interactable;
 struct coordinate
 {
 	short x, y;
@@ -125,33 +125,56 @@ class Player
         textcolor(WHITE);
 		}
 
-		void updateOrientation(short action, coordinate b1, coordinate b2) {
-	    	switch (action){
+		void updateOrientation(short action, coordinate b1, coordinate b2, Interactable *item) {
+	    	coordinate oldPos = pos;
+			switch (action){
 			case UP:
-		    	if(facing == UP) {
-					if (pos.y > b1.y) pos.y--;
-		    	}
-		    	else facing = UP;
-		    	break;
+				if(facing == UP) {
+					if (pos.y - 1 == item->getPos().y && pos.x == item->getPos().x) {
+						// Blocked
+					} else if (pos.y > b1.y) {
+						pos.y--;
+					}
+				} else {
+					facing = UP;
+				}
+				break;
 			case LEFT:
 		    	if(facing == LEFT) {
-					if (pos.x > b1.x) pos.x -= 2;
-		    	}
+					if (pos.x - 1 == item->getPos().x && pos.y == item->getPos().y) {
+						// Blocked
+					} else if (pos.x > b1.x) {
+						pos.x -= 2;
+					}
+				}
 		    	else facing = LEFT;
 		    	break;
 			case RIGHT:
 		    	if(facing == RIGHT) {
-					if (pos.x < b2.x) pos.x += 2;
-		    	}
+					if (pos.x + 1 == item->getPos().x && pos.y == item->getPos().y) {
+						// Blocked
+					} else if (pos.x < b2.x) {
+						pos.x += 2;
+					}
+				}
 		    	else facing = RIGHT;
 		    	break;
 			case DOWN:
 		    	if(facing == DOWN) {
-					if (pos.y < b2.y) pos.y++;
-		    	}
+					if (pos.y + 1 == item->getPos().y && pos.x == item->getPos().x) {
+						// Blocked
+					} else if (pos.y < b2.y) {
+						pos.y++;
+					}
+
+				}
 		    	else facing = DOWN;
 		    	break;
 	    	}
+			if (oldPos.x != pos.x || oldPos.y != pos.y) {
+			genCh(pos.x, pos.y, ' ');
+		}
+		
 		}
 		state getState() {
     		state s;
@@ -164,10 +187,49 @@ class Player
 
 class Interactable
 {
-	// Map mein utar
-	// Position st player udhar land nahi karta
-	// Agar object rakha hai to cant walk over that object
 	// coordinate pos, inheritance, 4 bool array for interacting with player
+	private:
+		coordinate pos;
+		char icon;
+		char* message;
+		int canInteractFrom[4];
+	// Map mein utar
+	public:
+		Interactable(short x, short y, char c, char* msg, int u, int l, int r, int d)
+		{
+			pos.x = x; pos.y = y;
+			icon = c;
+			message = msg;
+			canInteractFrom[UP] = u;
+			canInteractFrom[LEFT] = l;
+			canInteractFrom[RIGHT] = r;
+			canInteractFrom[DOWN] = d;
+		}
+		void display()
+		{
+			genCh(pos.x, pos.y, icon);
+		}
+
+		coordinate getPos() {return pos;}
+
+		int tryInteract(coordinate playerPos, short playerFacing)
+		{
+			if (playerPos.x == pos.x && playerPos.y == pos.y + 1 
+				&& playerFacing == UP && canInteractFrom[DOWN]) return 1;
+			if (playerPos.x == pos.x && playerPos.y == pos.y - 1 
+				&& playerFacing == DOWN && canInteractFrom[UP]) return 1;
+			if (playerPos.x == pos.x + 1 && playerPos.y == pos.y 
+				&& playerFacing == LEFT && canInteractFrom[RIGHT]) return 1;
+			if (playerPos.x == pos.x - 1 && playerPos.y == pos.y 
+				&& playerFacing == RIGHT && canInteractFrom[LEFT]) return 1;
+			
+			return 0;
+		}
+		void showMessage()
+		{
+			genSen(2, 22, "                  ");
+			genSen(2, 22, message);
+		}
 };
 
 class Retro
@@ -176,6 +238,7 @@ class Retro
 	coordinate boundary1, boundary2;
 	state currentState;
 	Player *player;
+	Interactable *item1;
 
 	void displayUI()
 	{
@@ -197,6 +260,7 @@ class Retro
 	    currentState = loadState();
 	    player = new Player(currentState);
         setColor(WHITE, BLACK);
+		item1 = new Interactable(12, 10, 'A', "This is a character", 1, 1, 1, 1);
 	}
 
 	void run()
@@ -204,11 +268,12 @@ class Retro
 	    clrscr();
 	    displayUI();
 	    char ch;
+		item1 -> display();
 	    player->displayPlayer();
 	    do
 	    {
 		ch = getch();
-		short action;
+		short action = -1;
 		switch (ch) {
 		    case 'w':
 			action = UP;
@@ -222,8 +287,20 @@ class Retro
 		    case 'd':
 			action = RIGHT;
 			break;
+			case 'e':
+			if (item1 -> tryInteract(player -> getState().pos, 
+			player -> getState().facing))
+			{
+				item1 -> showMessage();
+			}
+			break;
 		}
-		player->updateOrientation(action, boundary1, boundary2);
+
+		if (action != -1) {
+			player->updateOrientation(action, boundary1, boundary2, item1);
+		}
+
+		item1->display();
         player->displayPlayer();
 	    } while (ch != 'q');
 	}
@@ -232,6 +309,8 @@ class Retro
 	{
 		currentState = player -> getState();
 	    saveState(currentState);
+		delete item1;
+		delete player;
 	}
 };
 
