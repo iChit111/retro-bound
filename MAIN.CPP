@@ -113,7 +113,7 @@ class Player
             textcolor(WHITE);
         }
 
-        void updateOrientation(short action, coordinate b1, coordinate b2, Interactable *item);
+        void updateOrientation(short action, coordinate b1, coordinate b2, Interactable **items, int numItems);
 
         state getState()
         {
@@ -176,39 +176,48 @@ class Interactable
 };
 
 // Defined outside class since Interactable must be fully defined first
-void Player::updateOrientation(short action, coordinate b1, coordinate b2, Interactable *item)
+void Player::updateOrientation(short action, coordinate b1, coordinate b2, Interactable **items, int numItems)
 {
     coordinate oldPos = pos;
+    int nextX = pos.x;
+    int nextY = pos.y;
 
     switch (action) {
         case UP:
-            if (facing == UP) {
-                if (!(pos.y - 1 == item->getPos().y && pos.x == item->getPos().x)
-                    && pos.y > b1.y)
-                    pos.y--;
-            } else facing = UP;
+            if (facing == UP) nextY--;
+            else facing = UP;
             break;
         case LEFT:
-            if (facing == LEFT) {
-                if (!(pos.x - 2 == item->getPos().x && pos.y == item->getPos().y)
-                    && pos.x > b1.x)
-                    pos.x -= 2;
-            } else facing = LEFT;
+            if (facing == LEFT) nextX -= 2;
+            else facing = LEFT;
             break;
         case RIGHT:
-            if (facing == RIGHT) {
-                if (!(pos.x + 2 == item->getPos().x && pos.y == item->getPos().y)
-                    && pos.x < b2.x)
-                    pos.x += 2;
-            } else facing = RIGHT;
+            if (facing == RIGHT) nextX += 2;
+            else facing = RIGHT;
             break;
         case DOWN:
-            if (facing == DOWN) {
-                if (!(pos.y + 1 == item->getPos().y && pos.x == item->getPos().x)
-                    && pos.y < b2.y)
-                    pos.y++;
-            } else facing = DOWN;
-            break;
+            if (facing == DOWN) nextY++;
+            else facing = DOWN;
+            break;   
+    }
+
+    if (oldPos.x != nextX || oldPos.y != nextY) {
+        if (nextX >= b1.x && nextX <= b2.x && nextY >= b1.y && nextY <= b2.y) {
+            int isBlocked = 0;
+            for (int i = 0; i < numItems; i++)
+            {
+                if (items[i] -> getPos().x == nextX && items[i] -> getPos().y == nextY) {
+                    isBlocked = 1;
+                    break;
+                }
+            }
+
+            if (!isBlocked)
+            {
+                pos.x = nextX;
+                pos.y = nextY;
+            }
+        }
     }
 
     // Only erase old cell if player actually moved
@@ -223,7 +232,8 @@ class Retro
         coordinate boundary1, boundary2;
         state currentState;
         Player *player;
-        Interactable *item1;
+        Interactable *items[10];
+        int numItems;
 
         void displayUI()
         {
@@ -247,14 +257,16 @@ class Retro
             currentState = loadState();
             setColor(WHITE, BLACK);
             player = new Player(currentState);
-            item1 = new Interactable(12, 10, 'A', "This is a character", 1, 1, 1, 1);
+            numItems = 0;
+            items[numItems++] = new Interactable(12, 10, 'A', "This is a character", 1, 1, 1, 1);
+            items[numItems++] = new Interactable(12, 11, 'B', "This is another character", 0, 1, 1, 1);
         }
 
         void run()
         {
             clrscr();
             displayUI();
-            item1->display();
+            for (int i = 0; i < numItems; i++) items[i]->display();
             player->displayPlayer();
 
             char ch;
@@ -269,17 +281,21 @@ class Retro
                     case 's': action = DOWN;  break;
                     case 'd': action = RIGHT; break;
                     case 'e':
-                        if (item1->tryInteract(player->getState().pos,
-                                               player->getState().facing))
+                        for (int i = 0; i < numItems; i++)
                         {
-                            item1->showMessage();
+                            if (items[i] -> tryInteract(player -> getState().pos, player -> getState().facing)) {
+                                items[i] -> showMessage();
+                                break;
+                            }
                         }
                         break;
                 }
 
                 if (action != -1) {
-                    player->updateOrientation(action, boundary1, boundary2, item1);
-                    item1->display();
+                    player->updateOrientation(action, boundary1, boundary2, items, numItems);
+
+                    for (int i = 0; i < numItems; i++) items[i]->display();
+
                     player->displayPlayer();
                 }
 
@@ -290,7 +306,10 @@ class Retro
         {
             currentState = player->getState();
             saveState(currentState);
-            delete item1;
+            for (int i = 0; i < numItems; i++)
+            {
+                delete items[i];
+            }
             delete player;
         }
 };
