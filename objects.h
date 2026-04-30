@@ -67,27 +67,4 @@ public:
     }
 };
 
-class MovingObstacle : public GameObject {
-    int dx;
-    coordinate b1, b2;
-public:
-    MovingObstacle(short x, short y, coordinate bound1, coordinate bound2)
-        : GameObject(x, y, 'X', WHITE), dx(1), b1(bound1), b2(bound2) {}
-
-    void update() {
-        genCh(pos.x, pos.y, ' '); // erase
-        pos.x += dx;
-        if (pos.x >= b2.x || pos.x <= b1.x) dx = -dx;
-    }
-
-    virtual int interact(Player* p) {
-        coordinate pp = p->getPos();
-        if (pp.x == pos.x && pp.y == pos.y) {
-            p->hold(0); // drop whatever you're carrying
-            genSen(2, 22, "Dropped item!           ");
-        }
-        return 0;
-    }
-};
-
 #endif

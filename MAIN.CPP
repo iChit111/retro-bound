@@ -2,6 +2,6 @@
 
 int main() {
     Retro game;
-    game.runLevel();
+    game.run();
     return 0;
 }
