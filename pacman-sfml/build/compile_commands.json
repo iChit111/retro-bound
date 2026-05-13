@@ -1,0 +1,32 @@
+[
+{
+  "directory": "D:/College/Codes/retro-bound/pacman-sfml/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -g -std=gnu++17 -Wall -Wextra -Wpedantic -o CMakeFiles\\pacman.dir\\main.cpp.obj -c D:\\College\\Codes\\retro-bound\\pacman-sfml\\main.cpp",
+  "file": "D:/College/Codes/retro-bound/pacman-sfml/main.cpp",
+  "output": "D:/College/Codes/retro-bound/pacman-sfml/build/CMakeFiles/pacman.dir/main.cpp.obj"
+},
+{
+  "directory": "D:/College/Codes/retro-bound/pacman-sfml/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -g -std=gnu++17 -Wall -Wextra -Wpedantic -o CMakeFiles\\pacman.dir\\Game.cpp.obj -c D:\\College\\Codes\\retro-bound\\pacman-sfml\\Game.cpp",
+  "file": "D:/College/Codes/retro-bound/pacman-sfml/Game.cpp",
+  "output": "D:/College/Codes/retro-bound/pacman-sfml/build/CMakeFiles/pacman.dir/Game.cpp.obj"
+},
+{
+  "directory": "D:/College/Codes/retro-bound/pacman-sfml/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -g -std=gnu++17 -Wall -Wextra -Wpedantic -o CMakeFiles\\pacman.dir\\Maze.cpp.obj -c D:\\College\\Codes\\retro-bound\\pacman-sfml\\Maze.cpp",
+  "file": "D:/College/Codes/retro-bound/pacman-sfml/Maze.cpp",
+  "output": "D:/College/Codes/retro-bound/pacman-sfml/build/CMakeFiles/pacman.dir/Maze.cpp.obj"
+},
+{
+  "directory": "D:/College/Codes/retro-bound/pacman-sfml/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -g -std=gnu++17 -Wall -Wextra -Wpedantic -o CMakeFiles\\pacman.dir\\Pacman.cpp.obj -c D:\\College\\Codes\\retro-bound\\pacman-sfml\\Pacman.cpp",
+  "file": "D:/College/Codes/retro-bound/pacman-sfml/Pacman.cpp",
+  "output": "D:/College/Codes/retro-bound/pacman-sfml/build/CMakeFiles/pacman.dir/Pacman.cpp.obj"
+},
+{
+  "directory": "D:/College/Codes/retro-bound/pacman-sfml/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -g -std=gnu++17 -Wall -Wextra -Wpedantic -o CMakeFiles\\pacman.dir\\Ghost.cpp.obj -c D:\\College\\Codes\\retro-bound\\pacman-sfml\\Ghost.cpp",
+  "file": "D:/College/Codes/retro-bound/pacman-sfml/Ghost.cpp",
+  "output": "D:/College/Codes/retro-bound/pacman-sfml/build/CMakeFiles/pacman.dir/Ghost.cpp.obj"
+}
+]
