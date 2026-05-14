@@ -34,6 +34,8 @@ public:
 
     bool isFrightened() const { return m_mode == GhostMode::FRIGHTENED; }
     bool isEaten()      const { return m_mode == GhostMode::EATEN;      }
+    GhostMode getMode() const { return m_mode; }
+    void setMode(GhostMode newMode);
 
     int  getCol() const;
     int  getRow() const;

@@ -137,8 +137,8 @@ int Ghost::chooseDirection(const Maze& maze, int targetCol, int targetRow) const
         int nc = getCol() + dcs[i];
         int nr = getRow() + drs[i];
         if (maze.isWall(nc, nr)) continue;
-        // Ghost can pass through ghost door when returning (EATEN mode)
-        if (maze.isGhostDoor(nc, nr) && m_mode != GhostMode::EATEN) continue;
+        // Allow ghosts to leave the house by moving UP through the door
+        if (maze.isGhostDoor(nc, nr) && m_mode != GhostMode::EATEN && m_dir != Pacman::UP) continue;
 
         int dist = std::abs(nc - targetCol) + std::abs(nr - targetRow);
         if (dist < bestDist) {
@@ -146,6 +146,10 @@ int Ghost::chooseDirection(const Maze& maze, int targetCol, int targetRow) const
             bestDir  = dirs[i];
         }
     }
+    if (bestDist == INT_MAX) {
+        return opposite(m_dir);
+    }
+
     return bestDir;
 }
 
@@ -171,7 +175,7 @@ void Ghost::move(float dt, const Maze& maze, int targetCol, int targetRow) {
     int nc = getCol() + (dx > 0 ? 1 : dx < 0 ? -1 : 0);
     int nr = getRow() + (dy > 0 ? 1 : dy < 0 ? -1 : 0);
     bool blocked = maze.isWall(nc, nr) ||
-                   (maze.isGhostDoor(nc, nr) && m_mode != GhostMode::EATEN);
+               (maze.isGhostDoor(nc, nr) && m_mode != GhostMode::EATEN && m_dir != Pacman::UP);
 
     if (!blocked) {
         m_pos.x += dx;
@@ -321,4 +325,17 @@ sf::Vector2f Ghost::eyeOffset() const {
         case Pacman::DOWN:  return {  0.f,  2.f };
     }
     return { 0.f, 0.f };
+}
+
+void Ghost::setMode(GhostMode newMode) {
+    // Don't interrupt frightened or eaten states
+    if (m_mode != GhostMode::FRIGHTENED && m_mode != GhostMode::EATEN) {
+        m_mode = newMode;
+        
+        // Classic rule: reverse direction on mode swap
+        if (m_dir == Pacman::UP) m_dir = Pacman::DOWN;
+        else if (m_dir == Pacman::DOWN) m_dir = Pacman::UP;
+        else if (m_dir == Pacman::LEFT) m_dir = Pacman::RIGHT;
+        else if (m_dir == Pacman::RIGHT) m_dir = Pacman::LEFT;
+    }
 }

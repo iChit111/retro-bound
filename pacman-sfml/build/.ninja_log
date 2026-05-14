@@ -5,3 +5,10 @@
 8	1904	8004413020065556	CMakeFiles/pacman.dir/Game.cpp.obj	63fb16a566ec0f86
 30	1434	8004413861274516	CMakeFiles/pacman.dir/Pacman.cpp.obj	84f176f2e092938e
 22	295	8004414920022409	pacman.exe	ffcae48e77d876f9
+18	1421	8004418701777242	CMakeFiles/pacman.dir/Pacman.cpp.obj	84f176f2e092938e
+1422	1729	8004418715865195	pacman.exe	ffcae48e77d876f9
+27	1554	8004424048418508	CMakeFiles/pacman.dir/main.cpp.obj	e9ffaae7944dfcf3
+38	1582	8004424048501637	CMakeFiles/pacman.dir/Maze.cpp.obj	205720af155c65d3
+43	1601	8004424048586666	CMakeFiles/pacman.dir/Ghost.cpp.obj	49f731719660ce41
+33	1862	8004424048501637	CMakeFiles/pacman.dir/Game.cpp.obj	63fb16a566ec0f86
+1862	2120	8004424066791418	pacman.exe	ffcae48e77d876f9

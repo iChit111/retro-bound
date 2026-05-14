@@ -113,6 +113,7 @@ bool Pacman::tryMove(const Maze& maze, int dir, float dt) {
     else if (dir == DOWN)  { dy =  m_speed * dt; nr++; }
 
     // Snap to tile centre on the perpendicular axis to avoid drift
+    // Snap to tile centre on the perpendicular axis to avoid drift
     if (dir == RIGHT || dir == LEFT)
         m_pos.y = Maze::rowToPixel(getRow()); // snap Y
     else
@@ -122,8 +123,18 @@ bool Pacman::tryMove(const Maze& maze, int dir, float dt) {
         m_pos.x += dx;
         m_pos.y += dy;
         return true;
+    } else {
+        // BUG FIX: If there is a wall ahead, keep moving until we hit the exact centre of the current tile
+        float cx = Maze::colToPixel(getCol());
+        float cy = Maze::rowToPixel(getRow());
+        
+        if (dir == RIGHT) m_pos.x = std::min(m_pos.x + dx, cx);
+        if (dir == LEFT)  m_pos.x = std::max(m_pos.x + dx, cx);
+        if (dir == DOWN)  m_pos.y = std::min(m_pos.y + dy, cy);
+        if (dir == UP)    m_pos.y = std::max(m_pos.y + dy, cy);
+        
+        return false;
     }
-    return false;
 }
 
 // ─── Animate the chomping mouth ───────────────────────────────────────────────

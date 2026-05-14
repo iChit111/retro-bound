@@ -214,8 +214,11 @@ void Game::updateLevelWin(float dt) {
 
 // ─── Switch ghost modes globally ─────────────────────────────────────────────
 void Game::switchGhostModes(bool toChase) {
-    // Don't override frightened or eaten ghosts
-    // (The ghost's own update handles exiting those modes)
+    GhostMode newMode = toChase ? GhostMode::CHASE : GhostMode::SCATTER;
+    m_blinky.setMode(newMode);
+    m_pinky.setMode(newMode);
+    m_inky.setMode(newMode);
+    m_clyde.setMode(newMode);
 }
 
 // ─── Render ───────────────────────────────────────────────────────────────────
