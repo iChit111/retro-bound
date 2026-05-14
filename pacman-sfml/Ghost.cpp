@@ -154,39 +154,65 @@ int Ghost::chooseDirection(const Maze& maze, int targetCol, int targetRow) const
 }
 
 // ─── Movement ────────────────────────────────────────────────────────────────
+// ─── Movement ────────────────────────────────────────────────────────────────
 void Ghost::move(float dt, const Maze& maze, int targetCol, int targetRow) {
-    // Decide direction only when near the centre of a tile
-    float cx = Maze::colToPixel(getCol());
-    float cy = Maze::rowToPixel(getRow());
-    const float SNAP = m_speed * dt + 2.f;
-
-    if (std::abs(m_pos.x - cx) < SNAP && std::abs(m_pos.y - cy) < SNAP) {
-        m_pos.x = cx; m_pos.y = cy; // snap to centre
-        m_dir = chooseDirection(maze, targetCol, targetRow);
-    }
-
-    // Advance in chosen direction
+    // 1. Calculate how far we will move this frame based on current direction
     float dx = 0, dy = 0;
     if      (m_dir == Pacman::RIGHT) dx =  m_speed * dt;
     else if (m_dir == Pacman::LEFT)  dx = -m_speed * dt;
     else if (m_dir == Pacman::UP)    dy = -m_speed * dt;
     else if (m_dir == Pacman::DOWN)  dy =  m_speed * dt;
 
+    float cx = Maze::colToPixel(getCol());
+    float cy = Maze::rowToPixel(getRow());
+
+    // 2. Did we just cross the centre of the current tile?
+    bool crossX = (m_dir == Pacman::RIGHT && m_pos.x <= cx && m_pos.x + dx >= cx) ||
+                  (m_dir == Pacman::LEFT  && m_pos.x >= cx && m_pos.x + dx <= cx);
+    bool crossY = (m_dir == Pacman::DOWN  && m_pos.y <= cy && m_pos.y + dy >= cy) ||
+                  (m_dir == Pacman::UP    && m_pos.y >= cy && m_pos.y + dy <= cy);
+
+    // Also trigger if we are starting exactly on the centre (e.g. spawning)
+    if (crossX || crossY || (m_pos.x == cx && m_pos.y == cy)) {
+        
+        // Snap perfectly to the centre
+        m_pos.x = cx;
+        m_pos.y = cy;
+        
+        // Let the ghost AI pick the next direction
+        m_dir = chooseDirection(maze, targetCol, targetRow);
+        
+        // Recalculate movement based on the NEW direction!
+        dx = 0; dy = 0;
+        if      (m_dir == Pacman::RIGHT) dx =  m_speed * dt;
+        else if (m_dir == Pacman::LEFT)  dx = -m_speed * dt;
+        else if (m_dir == Pacman::UP)    dy = -m_speed * dt;
+        else if (m_dir == Pacman::DOWN)  dy =  m_speed * dt;
+    }
+
+    // 3. Move, but check for walls
     int nc = getCol() + (dx > 0 ? 1 : dx < 0 ? -1 : 0);
     int nr = getRow() + (dy > 0 ? 1 : dy < 0 ? -1 : 0);
+    
+    // Check if the tile ahead is a wall, or a closed ghost door
     bool blocked = maze.isWall(nc, nr) ||
-               (maze.isGhostDoor(nc, nr) && m_mode != GhostMode::EATEN && m_dir != Pacman::UP);
+                   (maze.isGhostDoor(nc, nr) && m_mode != GhostMode::EATEN && m_dir != Pacman::UP);
 
     if (!blocked) {
         m_pos.x += dx;
         m_pos.y += dy;
+    } else {
+        // BUG FIX: If blocked, slide perfectly into the centre and stop
+        if (m_dir == Pacman::RIGHT) m_pos.x = std::min(m_pos.x + dx, cx);
+        if (m_dir == Pacman::LEFT)  m_pos.x = std::max(m_pos.x + dx, cx);
+        if (m_dir == Pacman::DOWN)  m_pos.y = std::min(m_pos.y + dy, cy);
+        if (m_dir == Pacman::UP)    m_pos.y = std::max(m_pos.y + dy, cy);
     }
 
-    // Tunnel wrap
+    // 4. Tunnel wrap
     if (m_pos.x < 0)                              m_pos.x = (float)(MAZE_COLS * TILE_SIZE);
     if (m_pos.x > (float)(MAZE_COLS * TILE_SIZE)) m_pos.x = 0;
 }
-
 // ─── Update ───────────────────────────────────────────────────────────────────
 void Ghost::update(float dt, const Maze& maze, const Pacman& pac, const Ghost& blinky) {
     // Handle frightened timer
