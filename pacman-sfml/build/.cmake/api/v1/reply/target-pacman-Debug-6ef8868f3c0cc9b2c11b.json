@@ -15,7 +15,6 @@
 		[
 			"add_executable",
 			"target_link_libraries",
-			"add_custom_command",
 			"target_compile_options"
 		],
 		"files" : 
@@ -42,12 +41,6 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 39,
-				"parent" : 0
-			},
-			{
-				"command" : 3,
-				"file" : 0,
 				"line" : 36,
 				"parent" : 0
 			}
@@ -58,21 +51,6 @@
 		"major" : 2,
 		"minor" : 10
 	},
-	"compileDependencies" : 
-	[
-		{
-			"backtrace" : 2,
-			"id" : "SFML::Graphics::@6890427a1f51a3e7e1df"
-		},
-		{
-			"backtrace" : 2,
-			"id" : "SFML::Window::@6890427a1f51a3e7e1df"
-		},
-		{
-			"backtrace" : 2,
-			"id" : "SFML::System::@6890427a1f51a3e7e1df"
-		}
-	],
 	"compileGroups" : 
 	[
 		{
@@ -82,15 +60,15 @@
 					"fragment" : "-g -std=gnu++17"
 				},
 				{
-					"backtrace" : 4,
+					"backtrace" : 3,
 					"fragment" : "-Wall"
 				},
 				{
-					"backtrace" : 4,
+					"backtrace" : 3,
 					"fragment" : "-Wextra"
 				},
 				{
-					"backtrace" : 4,
+					"backtrace" : 3,
 					"fragment" : "-Wpedantic"
 				}
 			],
@@ -99,7 +77,7 @@
 			{
 				"backtraces" : 
 				[
-					2
+					1
 				],
 				"standard" : "17"
 			},
@@ -124,17 +102,17 @@
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "C:\\msys64\\ucrt64\\lib\\libsfml-graphics.dll.a",
+				"fragment" : "-lsfml-graphics",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "C:\\msys64\\ucrt64\\lib\\libsfml-window.dll.a",
+				"fragment" : "-lsfml-window",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "C:\\msys64\\ucrt64\\lib\\libsfml-system.dll.a",
+				"fragment" : "-lsfml-system",
 				"role" : "libraries"
 			},
 			{
@@ -148,26 +126,19 @@
 	[
 		{
 			"backtrace" : 2,
-			"id" : "SFML::Graphics::@6890427a1f51a3e7e1df"
+			"fragment" : "sfml-graphics"
 		},
 		{
 			"backtrace" : 2,
-			"id" : "SFML::Window::@6890427a1f51a3e7e1df"
+			"fragment" : "sfml-window"
 		},
 		{
 			"backtrace" : 2,
-			"id" : "SFML::System::@6890427a1f51a3e7e1df"
+			"fragment" : "sfml-system"
 		}
 	],
 	"name" : "pacman",
 	"nameOnDisk" : "pacman.exe",
-	"orderDependencies" : 
-	[
-		{
-			"backtrace" : 3,
-			"id" : "pacman::@6890427a1f51a3e7e1df"
-		}
-	],
 	"paths" : 
 	{
 		"build" : ".",

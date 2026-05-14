@@ -27,19 +27,11 @@ add_executable(pacman ${SOURCES})
 # set(SFML_DIR "C:/SFML/lib/cmake/SFML")
 
 find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
-target_link_libraries(pacman PRIVATE SFML::Graphics SFML::Window SFML::System)
+target_link_libraries(pacman PRIVATE sfml-graphics sfml-window sfml-system)
 
 # ── Compiler Warnings (good practice!) ───────────────────────────────────────
 if (MSVC)
     target_compile_options(pacman PRIVATE /W3)
 else()
     target_compile_options(pacman PRIVATE -Wall -Wextra -Wpedantic)
-endif()
-if(WIN32)
-    add_custom_command(TARGET pacman POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_RUNTIME_DLLS:pacman>
-            $<TARGET_FILE_DIR:pacman>
-        COMMAND_EXPAND_LISTS
-    )
 endif()

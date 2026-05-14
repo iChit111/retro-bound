@@ -14,7 +14,7 @@ static const int   MAX_LEVELS       = 3;
 
 // ─── Constructor ─────────────────────────────────────────────────────────────
 Game::Game()
-    : m_window(sf::VideoMode(WIN_W, WIN_H), "Pac-Man  |  Modern C++ with SFML",
+    : m_window(sf::VideoMode({static_cast<unsigned int>(WIN_W), static_cast<unsigned int>(WIN_H)}), "Pac-Man  |  Modern C++ with SFML",
                sf::Style::Titlebar | sf::Style::Close)
     , m_blinky(GhostName::BLINKY, sf::Color(255,  0,  0), 14,  11)  // Red
     , m_pinky (GhostName::PINKY,  sf::Color(255,184,255), 14,  14)  // Pink
@@ -24,8 +24,10 @@ Game::Game()
     m_window.setFramerateLimit(60);
 
     // Load a simple system font as fallback
-    if (!m_font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"))
-        m_font.loadFromFile("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf");
+    if (!m_font.openFromFile("C:/Windows/Fonts/arial.ttf")) {
+        // The compiler requires us to check the result.
+        // We leave this block empty so it safely does nothing if it fails.
+    }
 
     m_state          = GameState::MENU;
     m_score          = 0;
@@ -52,20 +54,27 @@ void Game::run() {
 }
 
 // ─── Event Processing ────────────────────────────────────────────────────────
+// ─── Event Processing ────────────────────────────────────────────────────────
 void Game::processEvents() {
-    sf::Event e;
-    while (m_window.pollEvent(e)) {
-        if (e.type == sf::Event::Closed)
+    // SFML 3: pollEvent now returns a std::optional
+    while (const std::optional event = m_window.pollEvent()) {
+        
+        // SFML 3: Check for closed window using the new type-safe 'is' method
+        if (event->is<sf::Event::Closed>()) {
             m_window.close();
+        }
 
-        if (e.type == sf::Event::KeyPressed) {
+        // SFML 3: Extract the key press data using 'getIf'
+        if (const auto* keyPress = event->getIf<sf::Event::KeyPressed>()) {
+            
             // Menu → start game
-            if (m_state == GameState::MENU && e.key.code == sf::Keyboard::Enter) {
+            if (m_state == GameState::MENU && keyPress->code == sf::Keyboard::Key::Enter) {
                 m_state = GameState::PLAYING;
             }
+            
             // Game Over / Win → back to menu
             if ((m_state == GameState::GAME_OVER || m_state == GameState::YOU_WIN)
-                && e.key.code == sf::Keyboard::Enter) {
+                && keyPress->code == sf::Keyboard::Key::Enter) {
                 // Full reset
                 m_score = 0; m_lives = MAX_LIVES; m_level = 1;
                 m_maze.reset();
@@ -74,21 +83,20 @@ void Game::processEvents() {
                 m_state = GameState::MENU;
             }
 
-            // Movement keys
+            // Movement keys (Note the added 'Key::' for the SFML 3 scoped enums)
             if (m_state == GameState::PLAYING) {
-                if (e.key.code == sf::Keyboard::W || e.key.code == sf::Keyboard::Up)
+                if (keyPress->code == sf::Keyboard::Key::W || keyPress->code == sf::Keyboard::Key::Up)
                     m_pac.setDesiredDir(Pacman::UP);
-                if (e.key.code == sf::Keyboard::S || e.key.code == sf::Keyboard::Down)
+                if (keyPress->code == sf::Keyboard::Key::S || keyPress->code == sf::Keyboard::Key::Down)
                     m_pac.setDesiredDir(Pacman::DOWN);
-                if (e.key.code == sf::Keyboard::A || e.key.code == sf::Keyboard::Left)
+                if (keyPress->code == sf::Keyboard::Key::A || keyPress->code == sf::Keyboard::Key::Left)
                     m_pac.setDesiredDir(Pacman::LEFT);
-                if (e.key.code == sf::Keyboard::D || e.key.code == sf::Keyboard::Right)
+                if (keyPress->code == sf::Keyboard::Key::D || keyPress->code == sf::Keyboard::Key::Right)
                     m_pac.setDesiredDir(Pacman::RIGHT);
             }
         }
     }
 }
-
 // ─── Update Dispatcher ────────────────────────────────────────────────────────
 void Game::update(float dt) {
     // Flash timer (used for blinking text)
@@ -243,8 +251,7 @@ void Game::render() {
 
 // ─── HUD (score / level) ──────────────────────────────────────────────────────
 void Game::drawHUD() {
-    sf::Text t;
-    t.setFont(m_font);
+    sf::Text t(m_font);
     t.setCharacterSize(18);
     t.setFillColor(sf::Color::White);
 
@@ -252,14 +259,14 @@ void Game::drawHUD() {
     std::ostringstream ss;
     ss << "SCORE: " << m_score;
     t.setString(ss.str());
-    t.setPosition(8.f, (float)HUD_Y + 8.f);
+    t.setPosition({8.f, (float)HUD_Y + 8.f});
     m_window.draw(t);
 
     // Level
     ss.str("");
     ss << "LEVEL: " << m_level;
     t.setString(ss.str());
-    t.setPosition((float)WIN_W / 2.f - 40.f, (float)HUD_Y + 8.f);
+    t.setPosition({(float)WIN_W / 2.f - 40.f, (float)HUD_Y + 8.f});
     m_window.draw(t);
 }
 
@@ -268,7 +275,7 @@ void Game::drawLives() {
     sf::CircleShape icon(7.f);
     icon.setFillColor(sf::Color::Yellow);
     for (int i = 0; i < m_lives - 1; i++) {
-        icon.setPosition((float)(WIN_W - 30 - i * 20), (float)HUD_Y + 10.f);
+        icon.setPosition({(float)(WIN_W - 30 - i * 20), (float)HUD_Y + 10.f});
         m_window.draw(icon);
     }
 }
@@ -280,16 +287,14 @@ void Game::drawMenu() {
     bg.setFillColor(sf::Color::Black);
     m_window.draw(bg);
 
-    sf::Text title;
-    title.setFont(m_font);
+    sf::Text title(m_font);
     title.setCharacterSize(52);
     title.setFillColor(sf::Color::Yellow);
     title.setString("PAC-MAN");
     centreText(title, 100.f);
     m_window.draw(title);
 
-    sf::Text sub;
-    sub.setFont(m_font);
+    sf::Text sub(m_font);
     sub.setCharacterSize(18);
     sub.setFillColor(sf::Color(200, 200, 200));
     sub.setString("Modern C++ with SFML");
@@ -297,8 +302,7 @@ void Game::drawMenu() {
     m_window.draw(sub);
 
     // Controls
-    sf::Text ctrl;
-    ctrl.setFont(m_font);
+    sf::Text ctrl(m_font);
     ctrl.setCharacterSize(16);
     ctrl.setFillColor(sf::Color(180, 180, 255));
     ctrl.setString("WASD / Arrow keys to move\nE to interact with objects");
@@ -307,8 +311,7 @@ void Game::drawMenu() {
 
     // Blinking "Press Enter"
     if (m_flashVisible) {
-        sf::Text start;
-        start.setFont(m_font);
+        sf::Text start(m_font);
         start.setCharacterSize(22);
         start.setFillColor(sf::Color::Cyan);
         start.setString("Press ENTER to Start");
@@ -329,15 +332,14 @@ void Game::drawMenu() {
         sf::CircleShape ghost(10.f);
         ghost.setFillColor(infos[i].col);
         float gx = WIN_W / 2.f - 80.f + i * 50.f;
-        ghost.setPosition(gx - 10.f, 430.f);
+        ghost.setPosition({gx - 10.f, 430.f});
         m_window.draw(ghost);
 
-        sf::Text nm;
-        nm.setFont(m_font);
+        sf::Text nm(m_font);
         nm.setCharacterSize(11);
         nm.setFillColor(infos[i].col);
         nm.setString(infos[i].name + "\n" + infos[i].trait);
-        nm.setPosition(gx - 20.f, 455.f);
+        nm.setPosition({gx - 20.f, 455.f});
         m_window.draw(nm);
     }
 }
@@ -347,12 +349,11 @@ void Game::drawOverlay(const std::string& line1, const std::string& line2, sf::C
     // Semi-transparent dark box
     sf::RectangleShape box({ 360.f, 100.f });
     box.setFillColor(sf::Color(0, 0, 0, 180));
-    box.setOrigin(180.f, 50.f);
-    box.setPosition((float)WIN_W / 2.f, (float)WIN_H / 2.f);
+    box.setOrigin({180.f, 50.f});
+    box.setPosition({(float)WIN_W / 2.f, (float)WIN_H / 2.f});
     m_window.draw(box);
 
-    sf::Text t1;
-    t1.setFont(m_font);
+    sf::Text t1(m_font);
     t1.setCharacterSize(30);
     t1.setFillColor(col);
     t1.setString(line1);
@@ -360,8 +361,7 @@ void Game::drawOverlay(const std::string& line1, const std::string& line2, sf::C
     m_window.draw(t1);
 
     if (m_flashVisible) {
-        sf::Text t2;
-        t2.setFont(m_font);
+        sf::Text t2(m_font);
         t2.setCharacterSize(18);
         t2.setFillColor(sf::Color::White);
         t2.setString(line2);
@@ -372,6 +372,7 @@ void Game::drawOverlay(const std::string& line1, const std::string& line2, sf::C
 
 void Game::centreText(sf::Text& t, float y) {
     sf::FloatRect r = t.getLocalBounds();
-    t.setOrigin(r.left + r.width / 2.f, r.top);
-    t.setPosition((float)WIN_W / 2.f, y);
+    // Use SFML 3's position and size properties
+    t.setOrigin({r.position.x + r.size.x / 2.f, r.position.y});
+    t.setPosition({(float)WIN_W / 2.f, y});
 }

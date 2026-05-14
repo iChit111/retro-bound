@@ -65,12 +65,12 @@ void Maze::buildShapes() {
     // Small white dot
     m_dotShape.setRadius(2.f);
     m_dotShape.setFillColor(sf::Color(255, 255, 200));
-    m_dotShape.setOrigin(2.f, 2.f);
+    m_dotShape.setOrigin({2.f, 2.f});
 
     // Larger flashing pellet
     m_pelletShape.setRadius(5.f);
     m_pelletShape.setFillColor(sf::Color(255, 255, 200));
-    m_pelletShape.setOrigin(5.f, 5.f);
+    m_pelletShape.setOrigin({5.f, 5.f});
 
     // Wall tile (filled in draw loop)
     m_wallShape.setSize(sf::Vector2f((float)TILE_SIZE, (float)TILE_SIZE));
@@ -96,25 +96,25 @@ void Maze::draw(sf::RenderWindow& window) {
 
             switch (m_grid[r][c]) {
                 case WALL:
-                    m_wallShape.setPosition(px, py);
+                    m_wallShape.setPosition({px, py});
                     window.draw(m_wallShape);
                     break;
 
                 case DOT:
-                    m_dotShape.setPosition(px + TILE_SIZE / 2.f, py + TILE_SIZE / 2.f);
+                    m_dotShape.setPosition({px + TILE_SIZE / 2.f, py + TILE_SIZE / 2.f});
                     window.draw(m_dotShape);
                     break;
 
                 case POWER:
                     if (pelletVisible) {
-                        m_pelletShape.setPosition(px + TILE_SIZE / 2.f, py + TILE_SIZE / 2.f);
+                        m_pelletShape.setPosition({px + TILE_SIZE / 2.f, py + TILE_SIZE / 2.f});
                         window.draw(m_pelletShape);
                     }
                     break;
 
                 case GHOST_DOOR:
                     // Draw a thin pink door across two tiles
-                    m_doorShape.setPosition(px, py + TILE_SIZE / 2.f - 2.f);
+                    m_doorShape.setPosition({px, py + TILE_SIZE / 2.f - 2.f});
                     window.draw(m_doorShape);
                     break;
 

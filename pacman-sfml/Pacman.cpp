@@ -10,7 +10,7 @@ static const float PAC_RADIUS = 10.f;
 // ─── Constructor ─────────────────────────────────────────────────────────────
 Pacman::Pacman() {
     m_body.setRadius(PAC_RADIUS);
-    m_body.setOrigin(PAC_RADIUS, PAC_RADIUS);
+    m_body.setOrigin({PAC_RADIUS, PAC_RADIUS});
     m_body.setFillColor(sf::Color::Yellow);
     reset();
 }
@@ -147,7 +147,7 @@ void Pacman::drawNormal(sf::RenderWindow& window) {
     pie.setPointCount(SEGMENTS + 2);
     pie.setFillColor(sf::Color::Yellow);
     pie.setPosition(m_pos);
-    pie.setRotation(m_rotation);
+    pie.setRotation(sf::degrees(m_rotation));
 
     float startAngle = m_mouthAngle;          // degrees from 0
     float endAngle   = 360.f - m_mouthAngle;  // degrees from 0
@@ -166,13 +166,13 @@ void Pacman::drawNormal(sf::RenderWindow& window) {
     // Draw eye
     sf::CircleShape eye(2.f);
     eye.setFillColor(sf::Color::Black);
-    eye.setOrigin(2.f, 2.f);
+    eye.setOrigin({2.f, 2.f});
     // Eye position offset relative to facing direction
     float eyeAngle = (90.f + m_rotation) * 3.14159f / 180.f;
-    eye.setPosition(
+    eye.setPosition({
         m_pos.x + std::cos(eyeAngle) * 5.f,
         m_pos.y + std::sin(eyeAngle) * 5.f - 3.f
-    );
+    });
     window.draw(eye);
 }
 
@@ -189,7 +189,7 @@ void Pacman::drawDying(sf::RenderWindow& window) {
     pie.setPointCount(SEGMENTS + 2);
     pie.setFillColor(sf::Color::Yellow);
     pie.setPosition(m_pos);
-    pie.setRotation(m_rotation);
+    pie.setRotation(sf::degrees(m_rotation));
 
     pie.setPoint(0, sf::Vector2f(0.f, 0.f));
     for (int i = 0; i <= SEGMENTS; i++) {

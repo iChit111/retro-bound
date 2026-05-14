@@ -97,12 +97,12 @@ build CMakeFiles/pacman.dir/Ghost.cpp.obj: CXX_COMPILER__pacman_unscanned_Debug 
 #############################################
 # Link the executable pacman.exe
 
-build pacman.exe: CXX_EXECUTABLE_LINKER__pacman_Debug CMakeFiles/pacman.dir/main.cpp.obj CMakeFiles/pacman.dir/Game.cpp.obj CMakeFiles/pacman.dir/Maze.cpp.obj CMakeFiles/pacman.dir/Pacman.cpp.obj CMakeFiles/pacman.dir/Ghost.cpp.obj | C$:/msys64/ucrt64/lib/libsfml-graphics.dll.a C$:/msys64/ucrt64/lib/libsfml-window.dll.a C$:/msys64/ucrt64/lib/libsfml-system.dll.a
+build pacman.exe: CXX_EXECUTABLE_LINKER__pacman_Debug CMakeFiles/pacman.dir/main.cpp.obj CMakeFiles/pacman.dir/Game.cpp.obj CMakeFiles/pacman.dir/Maze.cpp.obj CMakeFiles/pacman.dir/Pacman.cpp.obj CMakeFiles/pacman.dir/Ghost.cpp.obj
   CONFIG = Debug
   FLAGS = -g
-  LINK_LIBRARIES = C:/msys64/ucrt64/lib/libsfml-graphics.dll.a  C:/msys64/ucrt64/lib/libsfml-window.dll.a  C:/msys64/ucrt64/lib/libsfml-system.dll.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_LIBRARIES = -lsfml-graphics  -lsfml-window  -lsfml-system  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\pacman.dir
-  POST_BUILD = C:\Windows\system32\cmd.exe /C "cd /D D:\College\Codes\retro-bound\pacman-sfml\build && C:\msys64\ucrt64\bin\cmake.exe -E copy_if_different C:/msys64/ucrt64/bin/libsfml-graphics-3.dll C:/msys64/ucrt64/bin/libsfml-window-3.dll C:/msys64/ucrt64/bin/libsfml-system-3.dll D:/College/Codes/retro-bound/pacman-sfml/build"
+  POST_BUILD = cd .
   PRE_LINK = cd .
   TARGET_FILE = pacman.exe
   TARGET_IMPLIB = libpacman.dll.a

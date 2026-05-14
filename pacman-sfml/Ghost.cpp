@@ -261,15 +261,15 @@ void Ghost::drawBody(sf::RenderWindow& window, sf::Color bodyColor) {
         // ── Dome ─────────────────────────────────────────────
         sf::CircleShape dome(r);
         dome.setFillColor(bodyColor);
-        dome.setOrigin(r, r);
-        dome.setPosition(px, py - 2.f);
+        dome.setOrigin({r, r});
+        dome.setPosition({px, py - 2.f});
         window.draw(dome);
 
         // ── Body rectangle ────────────────────────────────────
         sf::RectangleShape body({ r * 2.f, r });
         body.setFillColor(bodyColor);
-        body.setOrigin(r, 0.f);
-        body.setPosition(px, py - 2.f);
+        body.setOrigin({r, 0.f});
+        body.setPosition({px, py - 2.f});
         window.draw(body);
 
         // ── Skirt bumps (3 small semicircles along bottom) ────
@@ -277,8 +277,8 @@ void Ghost::drawBody(sf::RenderWindow& window, sf::Color bodyColor) {
         for (int i = 0; i < 3; i++) {
             sf::CircleShape bump(bumpR);
             bump.setFillColor(bodyColor);
-            bump.setOrigin(bumpR, bumpR);
-            bump.setPosition(px - r + bumpR + i * (r * 2.f / 3.f) + bumpR, py + r - 2.f);
+            bump.setOrigin({bumpR, bumpR});
+            bump.setPosition({px - r + bumpR + i * (r * 2.f / 3.f) + bumpR, py + r - 2.f});
             window.draw(bump);
         }
     }
@@ -291,25 +291,25 @@ void Ghost::drawBody(sf::RenderWindow& window, sf::Color bodyColor) {
             // White of eye
             sf::CircleShape eyeWhite(3.5f);
             eyeWhite.setFillColor(sf::Color::White);
-            eyeWhite.setOrigin(3.5f, 3.5f);
-            eyeWhite.setPosition(px + side * eyeOffX, py + eyeOffY);
+            eyeWhite.setOrigin({3.5f, 3.5f});
+            eyeWhite.setPosition({px + side * eyeOffX, py + eyeOffY});
             window.draw(eyeWhite);
 
             // Pupil (shifts toward movement direction)
             sf::Vector2f pupilOff = eyeOffset();
             sf::CircleShape pupil(2.f);
             pupil.setFillColor(sf::Color(0, 0, 200));
-            pupil.setOrigin(2.f, 2.f);
-            pupil.setPosition(px + side * eyeOffX + pupilOff.x, py + eyeOffY + pupilOff.y);
+            pupil.setOrigin({2.f, 2.f});
+            pupil.setPosition({px + side * eyeOffX + pupilOff.x, py + eyeOffY + pupilOff.y});
             window.draw(pupil);
         }
     } else {
         // Scared face: two dot eyes and a wavy mouth line
         sf::CircleShape eye(2.f);
         eye.setFillColor(sf::Color::White);
-        eye.setOrigin(2.f, 2.f);
-        eye.setPosition(px - 3.f, py - 3.f); window.draw(eye);
-        eye.setPosition(px + 3.f, py - 3.f); window.draw(eye);
+        eye.setOrigin({2.f, 2.f});
+        eye.setPosition({px - 3.f, py - 3.f}); window.draw(eye);
+        eye.setPosition({px + 3.f, py - 3.f}); window.draw(eye);
     }
 }
 

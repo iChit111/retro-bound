@@ -1,2 +1,7 @@
 # ninja log v7
 5	1292	8004142275486479	CMakeFiles/pacman.dir/main.cpp.obj	e9ffaae7944dfcf3
+23	1521	8004161092283667	CMakeFiles/pacman.dir/Ghost.cpp.obj	49f731719660ce41
+13	1305	8004163821335108	CMakeFiles/pacman.dir/Maze.cpp.obj	205720af155c65d3
+8	1904	8004413020065556	CMakeFiles/pacman.dir/Game.cpp.obj	63fb16a566ec0f86
+30	1434	8004413861274516	CMakeFiles/pacman.dir/Pacman.cpp.obj	84f176f2e092938e
+22	295	8004414920022409	pacman.exe	ffcae48e77d876f9
